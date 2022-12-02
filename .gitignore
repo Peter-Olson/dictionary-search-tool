@@ -1,0 +1,6 @@
+*.class
+*.txt
+*.ctxt
+dictionary_rikitikita.txt
+!dictionary_defs.txt
+!dictionary_no_defs.txt
