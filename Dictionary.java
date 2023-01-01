@@ -15,7 +15,11 @@
    
    Dictionary( boolean useDefs ) -- create a Dictionary with just words, or one with words and definitions
    
-   Dictionary( String fileName, LanguageSpecs specs, boolean useDefs ) -- create a Dictionary using another language, with just words, or their defs too
+   Dictionary( String fileName, boolean useDefs ) -- create a Dictionary from a different text file; can have words and defs, or
+                                                     words only
+   
+   Dictionary( String fileName, LanguageSpecs specs, boolean useDefs ) -- create a Dictionary using another language, with
+                                                                          just words, or their defs too
    
    @@@@@@@@@@ PUBLIC FUNCTIONS @@@@@@@@@
    
@@ -90,6 +94,9 @@
    
    clearFile( String fileName ) -- clear all contents of a text file so that it has nothing in it
    renameFile( String oldFileName, String newFileName ) -- renames file to new name
+   findAndReplace( String token, String replacement, String fileName ) -- find tokens in a file and replace them with another String
+   convertDelimitersToLineBreaks( String delimiter, String fileName ) -- convert a text file that all has data in a single line
+      (separated by delimiters) to a text file with multiple lines, delimited by line breaks
    
    fileContains( String fileName, String token ) -- True if the text file contains the token, false otherwise
    
@@ -173,7 +180,7 @@
    --------------------------------------------------------------------------------------------------------------------
    
    @author Peter Olson
-   @version 10/15/21
+   @version 12/30/22
    @see dictionary_no_defs.txt
    @see dictionary_defs.txt
    @see dictionary_rikitikita.txt
@@ -212,7 +219,7 @@ public class Dictionary extends LinkedHashMap {
    public final String[] ENGLISH_ALPHABET_LIST = {"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
    public String[] ALPHABET_LIST;   //by default, this is English ^^; also can be set to another language
    public final String VOWELS = "AEIOU"; //@@@NOTE: If you want 'Y' to be a vowel, this String needs to be changed. (add 'Y')
-   public final String DIRECTORY_PATH = "C://Users/Peter/Desktop/UnclePedro/Work/teaching/cs/Java Files/Java Worksheets and Assignments/teacher";
+   public final String DIRECTORY_PATH = System.getProperty("user.dir");
    
    /**
       Create a dictionary and add all the words and definitions to it (note, Dictionary is a HashMap).
@@ -222,9 +229,11 @@ public class Dictionary extends LinkedHashMap {
       @see DICTIONARY_WITH_DEFS_FILE_NAME --> see text file
    */
    public Dictionary () {
+      SOPln("Path:" + DIRECTORY_PATH);
       Scanner scanner = getScanner( DICTIONARY_WITH_DEFS_FILE_NAME );
       ALPHABET_LIST = ENGLISH_ALPHABET_LIST;
       addWordsAndDefs( scanner );
+      scanner.close();
       
       NUM_WORDS = this.size();
    }
@@ -244,12 +253,34 @@ public class Dictionary extends LinkedHashMap {
       if( useDefs ) {
          Scanner scanner = getScanner( DICTIONARY_WITH_DEFS_FILE_NAME );
          addWordsAndDefs( scanner );
+         scanner.close();
       } else {
          Scanner scanner = getScanner( DICTIONARY_NO_DEFS_FILE_NAME );
          addWords( scanner );
+         scanner.close();
       }
      
       NUM_WORDS = this.size();    
+   }
+   
+   /**
+      Create a dictionary from a text file
+      
+      @param fileName The name of the text file that contains the dictionary
+      @param useDefs True if the text file has definitions, false if it has no definitions
+   */
+   public Dictionary( String fileName, boolean useDefs ) {
+      Scanner scanner = getScanner( fileName );
+      ALPHABET_LIST = ENGLISH_ALPHABET_LIST;
+      
+      if( useDefs )
+         addWordsAndDefs( scanner );
+      else
+         addWords( scanner );
+      
+      scanner.close();
+      
+      NUM_WORDS = this.size();
    }
    
    /**
@@ -269,6 +300,7 @@ public class Dictionary extends LinkedHashMap {
       else
          addWords( scanner );
       
+      scanner.close();
       NUM_WORDS = this.size();
    }
    
@@ -1833,10 +1865,6 @@ public class Dictionary extends LinkedHashMap {
       if( !fileName.contains(".txt") )
          fileName += ".txt";
    	
-   	// Only .txt files accepted
-      if( !fileName.contains(".txt") )
-         System.out.println("Please only use a .txt file");
-   	
       File file = null;
       PrintStream printStream = null;
       
@@ -1847,9 +1875,8 @@ public class Dictionary extends LinkedHashMap {
          System.out.println(e);
       }
       
-      for( int i = 0; i < list.length; i++ ) {
+      for( int i = 0; i < list.length; i++ )
          printStream.println( list[i] );
-      }
       
       printStream.close();
    }
@@ -1865,24 +1892,19 @@ public class Dictionary extends LinkedHashMap {
       if( !fileName.contains(".txt") )
          fileName += ".txt";
    	
-   	// Only .txt files accepted
-      if( !fileName.contains(".txt") )
-         System.out.println("Please only use a .txt file");
-   	
       File file = null;
       PrintStream printStream = null;
       
-      try
-      {
+      try {
          file = new File( fileName );
          printStream = new PrintStream( file );
       } catch( IOException e ) {
          System.out.println(e);
       }
       
-      for( int i = 0; i < list.size(); i++ ) {
+      int size = list.size();
+      for( int i = 0; i < size; i++ )
          printStream.println( list.get(i) );
-      }
       
       printStream.close();
    }
@@ -1898,24 +1920,18 @@ public class Dictionary extends LinkedHashMap {
       if( !fileName.contains(".txt") )
          fileName += ".txt";
    	
-   	// Only .txt files accepted
-      if( !fileName.contains(".txt") )
-         System.out.println("Please only use a .txt file");
-   	
       File file = null;
       PrintStream printStream = null;
       
-      try
-      {
+      try {
          file = new File( fileName );
          printStream = new PrintStream( file );
       } catch( IOException e ) {
          System.out.println(e);
       }
       
-      for( String word : list.keySet() ) {
+      for( String word : list.keySet() )
          printStream.println( word );
-      }
       
       printStream.close();
    }
@@ -1938,15 +1954,10 @@ public class Dictionary extends LinkedHashMap {
       if(!fileName.contains(".txt"))
          fileName += ".txt";
    	
-   	// Only .txt files accepted
-      if(!fileName.contains(".txt"))
-         System.out.println("Please only use a .txt file");
-   	
       File file = null;
       PrintStream printStream = null;
       
-      try
-      {
+      try {
          file = new File(fileName);
          printStream = new PrintStream(file);
       } catch( IOException e ) {
@@ -1978,6 +1989,33 @@ public class Dictionary extends LinkedHashMap {
       13 letters- 14185
       14 letters- 9312
       15 letters- 5877
+      
+      The following lengthed words are not in Collin's 15th Edition Dictionary. However, these lists have been compiled and
+      stored in the Xletterwords.txt files, but are not found in the dictionary_defs.txt file or the dictionary_no_defs.txt file
+      *16 letters- 5067
+      *17 letters- 3113
+      *18 letters- 1804
+      *19 letters- 1026
+      *20 letters- 601
+      *21 letters- 353
+      *22 letters- 203
+      *23 letters- 125
+      *24 letters- 80
+      *25 letters- 41
+      *26 letters- 22
+      *27 letters- 20
+      *28 letters- 18
+      *29 letters- 12
+      *30 letters- 9
+      *31 letters- 4
+      *32 letters- 2
+      *33 letters- 2
+      *34 letters- 2
+      *35 letters- 3
+      *36 letters- 1
+      *45 letters- 2
+      *51 letters- 1
+      *52 letters- 1
       
       @param length The length of the word to find
       @return String[] The list of words in the dictionary of the given length
@@ -2655,6 +2693,17 @@ public class Dictionary extends LinkedHashMap {
    }
    
    /**
+      Gets a random word from the dictionary
+      
+      @return String A random word from the dictionary
+   */
+   private String getRandomWord() {
+      ArrayList<String> keysAsArray = new ArrayList<String>(this.keySet());
+      Random r = new Random();
+      return keysAsArray.get(r.nextInt(keysAsArray.size()));
+   }
+   
+   /**
       Adds the contents of an array to the end of an ArrayList
       
       @param arrayList The ArrayList to add the array contents to
@@ -2689,7 +2738,7 @@ public class Dictionary extends LinkedHashMap {
             fr = new FileReader( new File( fileName ).getAbsoluteFile() );
             scan = new Scanner( fr );
          } catch( FileNotFoundException e2 ) {
-            System.out.println("File not found");
+            System.out.println("File not found: " + fileName);
             return null;
          }
       }
@@ -2725,4 +2774,42 @@ public class Dictionary extends LinkedHashMap {
       
    }
    
+   /**
+      Replace all tokens in file with given token
+      
+      @param token The token being searched for within the file
+      @param replacement The substitute String for all tokens found
+      @param fileName The name of the file that is being edited
+   */
+   public void findAndReplace( String token, String replacement, String fileName ) {
+      Scanner fileScanner = getScanner( fileName );
+      
+      ArrayList<String> totalText = new ArrayList<String>();
+      int totalLines = totalText.size();
+      int totalReplacements = 0;
+      while( fileScanner.hasNextLine() ) {
+         String text = fileScanner.nextLine();
+         text = text.replace( token, replacement );
+         totalText.add( text );
+      }
+      
+      write( totalText, fileName );
+      fileScanner.close();
+   }
+   
+   /**
+      Take a text file that all data in a single line (with delimited tokens) and split the tokens into multiple lines.
+      Then overwrite the file
+      
+      @param delimiter The String that is separating lines of the text file
+      @param fileName The name of the text file to convert
+   */
+   public void convertDelimitersToLineBreaks( String delimiter, String fileName ) {
+      Scanner fileScanner = getScanner( fileName );
+      
+      String[] lines = fileScanner.nextLine().split( delimiter );
+      
+      write( lines, fileName );
+      fileScanner.close();
+   }
 }

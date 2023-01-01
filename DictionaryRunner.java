@@ -3,7 +3,7 @@
    DictionaryRunner.java
    
    @author Peter Olson
-   @version 3/27/18
+   @version 12/30/22
    @see Dictionary.java
 */
 
@@ -185,10 +185,10 @@ public class DictionaryRunner {
                       num = scanner.nextInt();
                       scanner.nextLine();
                       String[] list2 = dct.getXLetterWords( num );
-                      dct.printList( list2 );
+                      //dct.printList( list2 );
                       SOPln("Would you like to save the list?");
                       if( isPositiveResponse() ) {
-                         SOPln("Would would you like to name your text file?");
+                         SOPln("What would you like to name your text file?");
                          fileName = scanner.nextLine();
                          dct.write( list2, fileName );
                       }
@@ -372,6 +372,21 @@ public class DictionaryRunner {
                       if( isPositiveResponse() )
                         dct.printFile( fileName );*/
                       break;
+            case "1": SOPln("\nWhat token would you like to find?");
+                      response = scanner.nextLine();
+                      SOPln("\nWhat would you like to replace the tokens with?");
+                      response2 = scanner.nextLine();
+                      SOPln("\nWhat is the name of the text file you are using?");
+                      fileName = scanner.nextLine();
+                      dct.findAndReplace( response, response2, fileName );
+                      break;
+            case "2": SOPln("\nWhat is the delimiter separating the data within your text file?\n" +
+                            "[Note that this method expects the text file to only have one line, but lots of data]");
+                      response = scanner.nextLine();
+                      SOPln("\nWhat is the name of the text file you are using?");
+                      fileName = scanner.nextLine();
+                      dct.convertDelimitersToLineBreaks( response, fileName );
+                      break;
             case "q": keepGoing = false;
                       break;
             default:  SOPln("I didn't understand that input. Please enter a letter between 'a' and 'u'.");
@@ -380,6 +395,7 @@ public class DictionaryRunner {
       } while( keepGoing );
       
       SOPln("\nGoodbye nerd.");
+      scanner.close();
    }
    
    public static void printMenu() {
@@ -409,6 +425,8 @@ public class DictionaryRunner {
       SOPln("x. anagramSolverWithReps");
       SOPln("y. makeLanguage");
       SOPln("z. getXLetterWordsFromTextFile");
+      SOPln("1. findAndReplace");
+      SOPln("2. convertDelimitersToLineBreaks");
       SOPln("\nq. quit");
    }
    
@@ -422,6 +440,8 @@ public class DictionaryRunner {
       String response = scanner.nextLine();
       response = response.toUpperCase();
       
+      scanner.close();
+
       if( response.contains("Y") || response.contains("1") || response.contains("SURE") || response.contains("OK") )
          return true;
       return false;
