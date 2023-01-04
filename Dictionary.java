@@ -2,7 +2,7 @@
    Dictionary.java
    
    This is a dictionary implementation using a Map that holds the word and the definition. The dictionary that is used
-   is Collins 15th Edition Dictionary (Official Scrabble Dictionary) containing upwards of 270,000 words, published
+   is Collins 15th Edition Dictionary (Official Scrabble Dictionary) containing 276,643 words, published
    in 2015.
    
    --------------------------------------------------------------------------------------------------------------------
@@ -18,6 +18,8 @@
    Dictionary( String fileName, boolean useDefs ) -- create a Dictionary from a different text file; can have words and defs, or
                                                      words only
    
+   Dictionary( String fileName ) -- create a Dictionary from a text file with words and their total representation in definitions of another Dictionary
+
    Dictionary( String fileName, LanguageSpecs specs, boolean useDefs ) -- create a Dictionary using another language, with
                                                                           just words, or their defs too
    
@@ -28,6 +30,8 @@
    getDef( String word ) -- get the definition of a word
    addDefs( String fileName ) -- add definitions to a list of words that have no definitions
    
+   getFileName() -- get the name of the text file that this dictionary was built from
+
    descramble( String[] str, String fileName ) -- finds all words of a list of letters allowing rearrangement and removal. Then removes
                                                -- duplicates, orders the words in increasing word length, and alphabetizes each set of length words
    descramble( String str, String fileName ) -- same as above
@@ -46,11 +50,13 @@
    descrambleSpecs( String[] specs, String newFileName ) -- find all the words in the dictionary that match the given specs
    descrambleSpecs( String specs, String newFileName ) -- same as above
    descrambleSpecs( char[] specs, String newFileName ) -- same as above
+
    descrambleSpecs( String[] specs, String oldFileName, String newFileName ) -- find all the words in the text file that match the given specs,
                                                                              -- preserving the old text file
    descrambleSpecs( String specs, String oldFileName, String newFileName ) -- same as above
+
    descrambleSpecs( String[] specs, String str, String descrambleFileName, String newFileName ) -- find all the words made from the descrambled
-                                                                                                  -- letters that match the given specs
+                                                                                                   letters that match the given specs
    descrambleSpecs( String specs, String str, String descrambleFileName, String newFileName  ) -- same as above
    
    makeLanguage( LanguageSpecs specs, String fileName ) -- make a new language and store it in a text file;
@@ -77,9 +83,60 @@
    getDefsContainingX( String token ) -- get definitions containing a specified token
    getDefsContainingX( String[] tokens ) -- get definitions containing any of a set of specified tokens
    
+   isAdj( String word ) -- checks if the word is an adjective
+   isNoun( String word ) -- checks if the word is a noun
+   isVerb( String word ) -- checks if the word is a verb
+   isPreposition( String word ) -- checks if the word is a preposition
+   isInterjection( String word ) -- checks if the word is an interjection
+   isAdverb( String word ) -- checks if the word is an adverb
+   isPronoun( String word ) -- checks if the word is a pronoun
+   isConjunction( String word ) -- checks if the word is a conjunction
+   isSlang( String word ) -- checks if the word is a slang word
+   isColloquial( String word ) -- checks if the word is a colloquial word
+   isDialect( String word ) -- checks if the word is a dialect word
+   isArchaic( String word ) -- checks if the word is an archaic word
+   isObsolete( String word ) -- checks if the word is an obsolete word
+
+   hasDefAppearances( String searchToken ) -- checks if the token appears in any definitions in the dictionary
+   getDefAppearances( String searchToken ) -- gets a map of words whose definitions contain a specified token
+   getDefAppearanceTotal( String searchToken ) -- finds the total number of times that a given token appears within all definitions in the dictionary
+   getDefAppearanceDictionary() -- gets a map of all words and the total numbers of times that they appear in a definition
+   getSimplifiedDictionary( String dictionaryTotalsFileName, int minAppearances ) -- gets a simplified map of words and their definitions based on a minimum requirement
+                                                                                     for that word appearing within definitions in the regular dictionary
+
+   getAdjectives() -- gets a map of all the adjectives in the dictionary
+   getNouns() -- gets a map of all the nouns in the dictionary
+   getVerbs() -- gets a map of all the verbs in the dictionary
+   getPrepositions() -- gets a map of all the prepositions in the dictionary
+   getInterjections() -- gets a map of all the interjections in the dictionary
+   getAdverbs() -- gets a map of all the adverbs in the dictionary
+   getPronouns() -- gets a map of all the pronouns in the dictionary
+   getConjunctions() -- gets a map of all the conjunctions in the dictionary
+   getSlangs() -- gets a map of all the slang words in the dictionary
+   getColloquials() -- gets a map of all the colloquial words in the dictionary
+   getDialects() -- gets a map of all the dialect words in the dictionary
+   getArchaics() -- gets a map of all the archaic words in the dictionary
+   getObsoletes() -- gets a map of all the obsolete words in the dictionary
+
+   getRandomWord() -- gets a random word from the dictionary
+   getRandomAdjective() -- gets a random adjective from the dictionary
+   getRandomNoun() -- gets a random noun from the dictionary
+   getRandomVerb() -- gets a random verb from the dictionary
+   getRandomPreposition() -- gets a random preposition from the dictionary
+   getRandomInterjection() -- gets a random interjection from the dictionary
+   getRandomAdverb() -- gets a random adverb from the dictionary
+   getRandomPronoun() -- gets a random pronoun from the dictionary
+   getRandomConjunction() -- gets a random conjunction from the dictionary
+   getRandomSlang() -- gets a random slang word from the dictionary
+   getRandomColloquial() -- gets a random colloquial word from the dictionary
+   getRandomDialect() -- gets a random dialect word from the dictionary
+   getRandomArchaic() -- gets a random archaic word from the dictionary
+   getRandomObsolete() -- gets a random obsolete word from the dictionary
+
    write( String[] list, String fileName ) -- write a list to a text file
    write( ArrayList<String> list, String fileName ) -- write a list to a text file
    write( LinkedHashMap<String, String> list, String fileName ) -- write a list to a text file
+   writeWordTotalMap( LinkedHashMap<String, Integer> list, String fileName ) -- write a word num pair list to a text file
    writeLimit( String[] list, String fileName, int upperLimit ) -- write a list to a text file, excluding words that are longer than a specified limit
    writeLimit( String[] list, String fileName, int lowerLimit, int upperLimit ) -- write a list to a text file, excluding words based on length limits
    
@@ -92,6 +149,8 @@
    removeWordsLongerThanX( String fileName, int upperLimit ) -- edit a text file and replace it, removing all words longer than the given limit
    removeWordsLongerThanX( String oldFileName, String newFileName, int upperLimit ) -- same as above, but preserve old file, and create a new one
    
+   replaceWordsInDefs( String token, String replacement, String newFileName ) -- replace all instances of tokens in definitions with something new
+
    clearFile( String fileName ) -- clear all contents of a text file so that it has nothing in it
    renameFile( String oldFileName, String newFileName ) -- renames file to new name
    findAndReplace( String token, String replacement, String fileName ) -- find tokens in a file and replace them with another String
@@ -106,11 +165,14 @@
    
    @@@@@@@@@@ PRIVATE FUNCTIONS @@@@@@@@
    
+   getTotal( String word ) -- get the total number of times that this word appears in definitions in the regular dictionary
+
    containsAny( String word, String[] tokens ) -- finds whether the word contains any of the tokens (true) or not (false)
    containsAll( String word, String[] tokens ) -- finds whether the word contains all of the tokens (true) or not (false)
    
    addWords( Scanner scanner ) -- add the list of words to the Dictionary (no definitions)
    addWordsAndDefs( Scanner scanner ) -- add the list of words and their definitions to the Dictionary
+   addWordsAndTotals( Scanner scanner ) -- add the lsit of words and their total appearances to the Dictionary
    addArray( ArrayList<String> arrayList, String[] list ) -- add the contents of an array to the end of an ArrayList
    
    descrambleMain( String[] list ) -- adds the tokens that are words to the list and shrinks the list
@@ -120,7 +182,9 @@
    descramblePermutations( String prefix, String str, ArrayList<String> result ) -- finds all permutations of a list of letters
    
    descrambleSpecs( String[] specs, Scanner scanner ) -- find all matches that fit the specs and return them in a list
-   
+
+   isWordType( String word, String wordType ) -- checks if the given word has the same word type as 'wordType'
+
    removeReps( String str ) -- removes repeated letters from a String and returns the result
    
    alphabetizeSets( Scanner scanner ) -- alphabetize a text file per each set of words of a given length
@@ -187,9 +251,11 @@
    @see DictionaryRunner.java
    @see LanguageSpecs.java
    @see WordFinderGame.java
+   @see Wordle.java
 
 */
 
+import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
@@ -197,6 +263,8 @@ import java.util.Random;
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.Iterator;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
@@ -209,7 +277,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Iterator;
 
 public class Dictionary extends LinkedHashMap {
    
@@ -220,6 +287,22 @@ public class Dictionary extends LinkedHashMap {
    public String[] ALPHABET_LIST;   //by default, this is English ^^; also can be set to another language
    public final String VOWELS = "AEIOU"; //@@@NOTE: If you want 'Y' to be a vowel, this String needs to be changed. (add 'Y')
    public final String DIRECTORY_PATH = System.getProperty("user.dir");
+   public String TEXT_FILE_NAME = DICTIONARY_WITH_DEFS_FILE_NAME;
+
+   // Labels within the dictionary that determine the word type
+   private final String ADJ_LABEL = "[adj";
+   private final String NOUN_LABEL = "[n";
+   private final String VERB_LABEL = "[v";
+   private final String PREP_LABEL = "[prep";
+   private final String INTERJ_LABEL = "[interj";
+   private final String ADV_LABEL = "[adv";
+   private final String PRON_LABEL = "[pron";
+   private final String CONJ_LABEL = "[conj";
+   private final String SLANG_LABEL = "slang)";
+   private final String COLLOQ_LABEL = "(colloq";
+   private final String DIALECT_LABEL = "dialect)";
+   private final String ARCHAIC_LABEL = "(arch";
+   private final String OBSOLETE_LABEL = "(obsol";
    
    /**
       Create a dictionary and add all the words and definitions to it (note, Dictionary is a HashMap).
@@ -229,7 +312,6 @@ public class Dictionary extends LinkedHashMap {
       @see DICTIONARY_WITH_DEFS_FILE_NAME --> see text file
    */
    public Dictionary () {
-      SOPln("Path:" + DIRECTORY_PATH);
       Scanner scanner = getScanner( DICTIONARY_WITH_DEFS_FILE_NAME );
       ALPHABET_LIST = ENGLISH_ALPHABET_LIST;
       addWordsAndDefs( scanner );
@@ -272,11 +354,29 @@ public class Dictionary extends LinkedHashMap {
    public Dictionary( String fileName, boolean useDefs ) {
       Scanner scanner = getScanner( fileName );
       ALPHABET_LIST = ENGLISH_ALPHABET_LIST;
+      TEXT_FILE_NAME = fileName;
       
       if( useDefs )
          addWordsAndDefs( scanner );
       else
          addWords( scanner );
+      
+      scanner.close();
+      
+      NUM_WORDS = this.size();
+   }
+
+   /**
+      Create a dictionary with words and their total appearances in definitions within another dictionary
+
+      @param fileName The name of dictionary text file with words and their totals
+   */
+   public Dictionary( String fileName ) {
+      Scanner scanner = getScanner( fileName );
+      ALPHABET_LIST = ENGLISH_ALPHABET_LIST;
+      TEXT_FILE_NAME = fileName;
+      
+      addWordsAndTotals( scanner );
       
       scanner.close();
       
@@ -304,6 +404,15 @@ public class Dictionary extends LinkedHashMap {
       NUM_WORDS = this.size();
    }
    
+   /**
+      Get the text file name that this Dictionary was built from
+
+      @return String The name of the text file that this Dictionary was built from
+   */
+   public String getFileName() {
+      return TEXT_FILE_NAME;
+   }
+
    /**
       Tells whether the given String is a word or not.
       
@@ -341,6 +450,22 @@ public class Dictionary extends LinkedHashMap {
          return (String)this.get( word );
       else
          return "That's not a word!";
+   }
+
+   /**
+      Returns the total associated with the word given. If the word is not in the dictionary,
+      -1 is returned.
+      
+      @param word The word to get the total of
+      @return int The total number of times that this word appears in definitions in the dictionary, or -1 if this word is not a word
+      @see HashMap.get( Key key )
+   */
+   private int getTotal( String word ) {
+      word = word.toUpperCase();
+      if( isWord( word ) )
+         return (Integer)this.get( word );
+      else
+         return -1;
    }
    
    /**
@@ -397,6 +522,280 @@ public class Dictionary extends LinkedHashMap {
       return getFileSize( scanner );
    }
    
+   /**
+      Determines whether the word is the given type or not
+
+      @param word The word to check
+      @param wordType The type of word
+      @return boolean True if the word has the same type as 'wordType', false otherwise or if the word is not a word
+   */
+   private boolean isWordType( String word, String wordType ) {
+      if( !this.isWord( word ) )
+         return false;
+
+      return getDef( word ).contains( wordType );
+   }
+
+   /**Determines whether the word is an adjective or not
+      @param word The word to check */
+   public boolean isAdj( String word ) { return isWordType( word, ADJ_LABEL ); }
+   /**Determines whether the word is a noun or not
+      @param word The word to check */
+   public boolean isNoun( String word ) { return isWordType( word, NOUN_LABEL ); }
+   /**Determines whether the word is a verb or not
+      @param word The word to check */
+   public boolean isVerb( String word ) { return isWordType( word, VERB_LABEL ); }
+   /**Determines whether the word is a preposition or not
+      @param word The word to check */
+   public boolean isPreposition( String word ) { return isWordType( word, PREP_LABEL ); }
+   /**Determines whether the word is an interjection or not
+      @param word The word to check */
+   public boolean isInterjection( String word ) { return isWordType( word, INTERJ_LABEL ); }
+   /**Determines whether the word is an adverb or not
+      @param word The word to check */
+   public boolean isAdverb( String word ) { return isWordType( word, ADV_LABEL ); }
+   /**Determines whether the word is a pronoun or not
+      @param word The word to check */
+   public boolean isPronoun( String word ) { return isWordType( word, PRON_LABEL ); }
+   /**Determines whether the word is a conjunction or not
+      @param word The word to check */
+   public boolean isConjunction( String word ) { return isWordType( word, CONJ_LABEL ); }
+   /**Determines whether the word is a slang word or not
+      @param word The word to check */
+   public boolean isSlang( String word ) { return isWordType( word, SLANG_LABEL ); }
+   /**Determines whether the word is a colloquial word or not
+      @param word The word to check */
+   public boolean isColloquial( String word ) { return isWordType( word, COLLOQ_LABEL ); }
+   /**Determines whether the word is a dialect word or not
+      @param word The word to check */
+   public boolean isDialect( String word ) { return isWordType( word, DIALECT_LABEL ); }
+   /**Determines whether the word is an archaic word or not
+      @param word The word to check */
+   public boolean isArchaic( String word ) { return isWordType( word, ARCHAIC_LABEL ); }
+   /**Determines whether the word is an obsolete word or not
+      @param word The word to check */
+   public boolean isObsolete( String word ) { return isWordType( word, OBSOLETE_LABEL ); }
+
+   /**
+    * Get a map of the adjectives in the Dictionary and their definitions
+    *
+    * @return LinkedHashMap<String, String> The map of adjectives and their definitions
+    * @see getDefAppearances( String searchToken )
+   */
+   public LinkedHashMap<String, String> getAdjectives() {
+      return getDefAppearances( ADJ_LABEL );
+   }
+   /**
+    * Get a map of the nouns in the Dictionary and their definitions
+    *
+    * @return LinkedHashMap<String, String> The map of nouns and their definitions
+    * @see getDefAppearances( String searchToken )
+   */
+   public LinkedHashMap<String, String> getNouns() {
+      return getDefAppearances( NOUN_LABEL );
+   }
+   /**
+    * Get a map of the verbs in the Dictionary and their definitions
+    *
+    * @return LinkedHashMap<String, String> The map of verbs and their definitions
+    * @see getDefAppearances( String searchToken )
+   */
+   public LinkedHashMap<String, String> getVerbs() {
+      return getDefAppearances( VERB_LABEL );
+   }
+   /**
+    * Get a map of the prepositions in the Dictionary and their definitions
+    *
+    * @return LinkedHashMap<String, String> The map of prepositions and their definitions
+    * @see getDefAppearances( String searchToken )
+   */
+   public LinkedHashMap<String, String> getPrepositions() {
+      return getDefAppearances( PREP_LABEL );
+   }
+   /**
+    * Get a map of the interjections in the Dictionary and their definitions
+    *
+    * @return LinkedHashMap<String, String> The map of interjections and their definitions
+    * @see getDefAppearances( String searchToken )
+   */
+   public LinkedHashMap<String, String> getInterjections() {
+      return getDefAppearances( INTERJ_LABEL );
+   }
+   /**
+    * Get a map of the adverbs in the Dictionary and their definitions
+    *
+    * @return LinkedHashMap<String, String> The map of adverbs and their definitions
+    * @see getDefAppearances( String searchToken )
+   */
+   public LinkedHashMap<String, String> getAdverbs() {
+      return getDefAppearances( ADV_LABEL );
+   }
+   /**
+    * Get a map of the pronouns in the Dictionary and their definitions
+    *
+    * @return LinkedHashMap<String, String> The map of pronouns and their definitions
+    * @see getDefAppearances( String searchToken )
+   */
+   public LinkedHashMap<String, String> getPronouns() {
+      return getDefAppearances( PRON_LABEL );
+   }
+   /**
+    * Get a map of the conjunctions in the Dictionary and their definitions
+    *
+    * @return LinkedHashMap<String, String> The map of conjunctions and their definitions
+    * @see getDefAppearances( String searchToken )
+   */
+   public LinkedHashMap<String, String> getConjunctions() {
+      return getDefAppearances( CONJ_LABEL );
+   }
+   /**
+    * Get a map of the slang words in the Dictionary and their definitions
+    *
+    * @return LinkedHashMap<String, String> The map of slang words and their definitions
+    * @see getDefAppearances( String searchToken )
+   */
+   public LinkedHashMap<String, String> getSlangs() {
+      return getDefAppearances( SLANG_LABEL );
+   }
+   /**
+    * Get a map of the colloquial words in the Dictionary and their definitions
+    *
+    * @return LinkedHashMap<String, String> The map of colloquial words and their definitions
+    * @see getDefAppearances( String searchToken )
+   */
+   public LinkedHashMap<String, String> getColloquials() {
+      return getDefAppearances( COLLOQ_LABEL );
+   }
+   /**
+    * Get a map of the dialect words in the Dictionary and their definitions
+    *
+    * @return LinkedHashMap<String, String> The map of dialect words and their definitions
+    * @see getDefAppearances( String searchToken )
+   */
+   public LinkedHashMap<String, String> getDialects() {
+      return getDefAppearances( DIALECT_LABEL );
+   }
+   /**
+    * Get a map of the archaic words in the Dictionary and their definitions
+    *
+    * @return LinkedHashMap<String, String> The map of archaic words and their definitions
+    * @see getDefAppearances( String searchToken )
+   */
+   public LinkedHashMap<String, String> getArchaics() {
+      return getDefAppearances( ARCHAIC_LABEL );
+   }
+   /**
+    * Get a map of the obsolete words in the Dictionary and their definitions
+    *
+    * @return LinkedHashMap<String, String> The map of obsolete words and their definitions
+    * @see getDefAppearances( String searchToken )
+   */
+   public LinkedHashMap<String, String> getObsoletes() {
+      return getDefAppearances( OBSOLETE_LABEL );
+   }
+
+   /**
+    * Determines if the token appears in any definitions or not
+    *
+    * @param searchToken The token that is searched in all of the definitions
+    * @return boolean True if the token appears in at least one definition, false otherwise
+   */
+   public boolean hasDefAppearances( String searchToken ) {
+      Set<Map.Entry<String, String>> wordDefPairs = this.entrySet();
+
+      for( Map.Entry<String, String> wordDef : wordDefPairs ) {
+         String word = wordDef.getKey();
+         String def = wordDef.getValue();
+         if( def.contains( searchToken ) )
+            return true;
+      }
+
+      return false;
+   }
+
+   /**
+    * Find all of the words that contain the specified token in their definition and store them in a map
+    *
+    * @param searchToken The token that must appear in the definition of a word in order for it to be added to the map
+    * @return LinkedHashMap<String, String> The map of words and their definitions, the definition of which must contain the search token
+   */
+   public LinkedHashMap<String, String> getDefAppearances( String searchToken ) {
+      LinkedHashMap<String, String> wordDefMap = new LinkedHashMap<String, String>();
+      Set<Map.Entry<String, String>> wordDefPairs = this.entrySet();
+
+      for( Map.Entry<String, String> wordDef : wordDefPairs ) {
+         String word = wordDef.getKey();
+         String def = wordDef.getValue();
+         if( def.contains( searchToken ) )
+            wordDefMap.put( word, def );
+      }
+
+      return wordDefMap;
+   }
+
+   /**
+      Finds the total number of times that a token appears within all of the definitions in the dictionary
+
+      The total count only increases a max of one time per word within the dictionary (a definition that has the token
+      appearing multiple times will only increase the count by one)
+
+      @param searchToken The token being searched for in the definitions
+      @return int The total number of times that the token appears in definitions in the dictionary
+   */
+   public int getDefAppearanceTotal( String searchToken ) {
+      int totalAppearances = 0;
+      Set<Map.Entry<String, String>> wordDefPairs = this.entrySet();
+
+      for( Map.Entry<String, String> wordDef : wordDefPairs ) {
+         String def = wordDef.getValue();
+         if( def.contains( searchToken ) )
+            totalAppearances++;
+      }
+
+      return totalAppearances;
+   }
+
+   /**
+      Creates a LinkedHashMap of words and the total number of times that the word appears in definitions within the dictionary
+
+      Beware, this is an O(n^2) operation on the whole dictionary. Approx 276k x 276k combos to check
+
+      @return LinkedHashMap<String, Integer> The map of words and the total number of times that they appear in the dictionary
+   */
+   public LinkedHashMap<String, Integer> getDefAppearanceDictionary() {
+      LinkedHashMap<String, Integer> wordAppearanceMap = new LinkedHashMap<String, Integer>();
+
+      LinkedHashMap<String, String> dict = this;
+      for( String word : dict.keySet() ) {
+         int totalAppearances = getDefAppearanceTotal( word.toLowerCase() );
+         wordAppearanceMap.put( word, totalAppearances );
+      }
+
+      return wordAppearanceMap;
+   }
+
+   /**
+      Get a simplified dictionary based on each word's total appearances within the definitions of the entire dictionary.
+
+      @param dictionaryTotalsFileName The name of the dictionary that contains the how many times each word is found in definitions
+      @param minAppearances The minimum number of appearances required for the word to be added to the simplified dictionary
+      @return LinkedHashMap<String, String> The simplified map of words and their definitions
+   */
+   public LinkedHashMap<String, String> getSimplifiedDictionary( String dictionaryTotalsFileName, int minAppearances ) {
+      LinkedHashMap<String, String> simplifiedMap = new LinkedHashMap<String, String>();
+
+      LinkedHashMap<String, String> dict = this;
+      Dictionary totalDict = new Dictionary( dictionaryTotalsFileName );
+
+      for( String word : dict.keySet() ) {
+         int totalAppearances = totalDict.getTotal( word );
+         if( totalAppearances >= minAppearances )
+            simplifiedMap.put( word, getDef( word ) );
+      }
+
+      return simplifiedMap;
+   }
+
    /**
       Create a dictionary filled with words of a new language. These new words are randomized using the processNewWord(..) method that is dependent
       upon the LanguageSpecs for that language. Each word added is unique
@@ -1875,8 +2274,12 @@ public class Dictionary extends LinkedHashMap {
          System.out.println(e);
       }
       
-      for( int i = 0; i < list.length; i++ )
-         printStream.println( list[i] );
+      for( int i = 0; i < list.length; i++ ) {
+         if( i != list.length - 1 )
+            printStream.println( list[i] );
+         else
+            printStream.print( list[i] );
+      }
       
       printStream.close();
    }
@@ -1903,8 +2306,12 @@ public class Dictionary extends LinkedHashMap {
       }
       
       int size = list.size();
-      for( int i = 0; i < size; i++ )
-         printStream.println( list.get(i) );
+      for( int i = 0; i < size; i++ ) {
+         if( i != size - 1 )
+            printStream.println( list.get(i) );
+         else
+            printStream.print( list.get(i) );
+      }
       
       printStream.close();
    }
@@ -1929,9 +2336,80 @@ public class Dictionary extends LinkedHashMap {
       } catch( IOException e ) {
          System.out.println(e);
       }
-      
+
+      /* @NOTE: old version, didn't allow defs
       for( String word : list.keySet() )
          printStream.println( word );
+      */
+      
+      Set<Map.Entry<String, String>> wordDefPairs = list.entrySet();
+      Iterator it = wordDefPairs.iterator();
+      while( it.hasNext() ) {
+         Map.Entry<String, String> wordDef = (Map.Entry<String, String>)it.next();
+         String word = wordDef.getKey();
+         String def = wordDef.getValue();
+         
+         if( def == null || def.equals("") ) {
+            if( it.hasNext() )
+               printStream.println( word );
+            else
+               printStream.print( word );
+         } else {
+            if( it.hasNext() )
+               printStream.println( word + "\t" + def );
+            else
+               printStream.print( word + "\t" + def );
+         }
+      }
+      
+      printStream.close();
+   }
+
+   /**
+      Given a LinkedHashMap and a file name, writes each token on sequential lines to a text file
+      
+      @param list The LinkedHashMap of String Integer pairs to write to the text file
+      @param fileName The name of the text file being written to. Note: If fileName does not end in '.txt', it will be appended
+   */
+   public void writeWordTotalMap( LinkedHashMap<String, Integer> list, String fileName ) {
+         
+      if( !fileName.contains(".txt") )
+         fileName += ".txt";
+      
+      File file = null;
+      PrintStream printStream = null;
+      
+      try {
+         file = new File( fileName );
+         printStream = new PrintStream( file );
+      } catch( IOException e ) {
+         System.out.println(e);
+      }
+
+      /* @NOTE: old version, didn't allow defs
+      for( String word : list.keySet() )
+         printStream.println( word );
+      */
+      
+      Set<Map.Entry<String, Integer>> wordNumPairs = list.entrySet();
+      Iterator it = wordNumPairs.iterator();
+      while( it.hasNext() ) {
+         Map.Entry<String, Integer> wordNum = (Map.Entry<String, Integer>)it.next();
+         String word = wordNum.getKey();
+         Integer num = wordNum.getValue();
+         
+         if( num == null ) {
+            if( it.hasNext() )
+               printStream.println( word );
+            else
+               printStream.print( word );
+         } else {
+            if( it.hasNext() )
+               printStream.println( word + "\t" + num );
+            else
+               printStream.print( word + "\t" + num );
+         }
+      }
       
       printStream.close();
    }
@@ -1965,8 +2443,12 @@ public class Dictionary extends LinkedHashMap {
       }
       
       for( int i = 0; i < list.length; i++ ) {
-         if( list[i].length() <= upperLimit && list[i].length() >= lowerLimit )
-            printStream.println( list[i] );
+         if( list[i].length() <= upperLimit && list[i].length() >= lowerLimit ) {
+            if( i != list.length - 1 )
+               printStream.println( list[i] );
+            else
+               printStream.print( list[i] );
+         }
       }
       
       printStream.close();
@@ -2248,19 +2730,19 @@ public class Dictionary extends LinkedHashMap {
       @param token If words contain the token, they are removed.
    */
    public void removeWords( String fileName, String token ) {
-      Scanner scanner = getScanner( fileName );
+      Scanner fileScanner = getScanner( fileName );
       
       ArrayList<String> list = new ArrayList<String>();
       
-      while( scanner.hasNextLine() ) {
-         String word = scanner.nextLine();
+      while( fileScanner.hasNextLine() ) {
+         String word = fileScanner.nextLine();
          if( !word.equals( token ) )
             list.add( word );
       }
       
       write( list, fileName );
       
-      scanner.close();
+      fileScanner.close();
    }
    
    /**
@@ -2272,19 +2754,19 @@ public class Dictionary extends LinkedHashMap {
       @param token If words contain the token, they are removed.
    */
    public void removeWords( String oldFileName, String newFileName, String token ) {
-      Scanner scanner = getScanner( oldFileName );
+      Scanner fileScanner = getScanner( oldFileName );
       
       ArrayList<String> list = new ArrayList<String>();
       
-      while( scanner.hasNextLine() ) {
-         String word = scanner.nextLine();
+      while( fileScanner.hasNextLine() ) {
+         String word = fileScanner.nextLine();
          if( !word.equals( token ) )
             list.add( word );
       }
       
       write( list, newFileName );
       
-      scanner.close();
+      fileScanner.close();
    }
    
    /**
@@ -2295,19 +2777,19 @@ public class Dictionary extends LinkedHashMap {
       @param token If words contain the token, they are removed.
    */
    public void removeWordsContainingX( String fileName, String token ) {
-      Scanner scanner = getScanner( fileName );
+      Scanner fileScanner = getScanner( fileName );
       
       ArrayList<String> list = new ArrayList<String>();
       
-      while( scanner.hasNextLine() ) {
-         String word = scanner.nextLine();
+      while( fileScanner.hasNextLine() ) {
+         String word = fileScanner.nextLine();
          if( !word.contains( token ) )
             list.add( word );
       }
       
       write( list, fileName );
       
-      scanner.close();
+      fileScanner.close();
    }
    
    /**
@@ -2319,19 +2801,19 @@ public class Dictionary extends LinkedHashMap {
       @param token If words contain the token, they are removed.
    */
    public void removeWordsContainingX( String oldFileName, String newFileName, String token ) {
-      Scanner scanner = getScanner( oldFileName );
+      Scanner fileScanner = getScanner( oldFileName );
       
       ArrayList<String> list = new ArrayList<String>();
       
-      while( scanner.hasNextLine() ) {
-         String word = scanner.nextLine();
+      while( fileScanner.hasNextLine() ) {
+         String word = fileScanner.nextLine();
          if( !word.contains( token ) )
             list.add( word );
       }
       
       write( list, newFileName );
       
-      scanner.close();
+      fileScanner.close();
    }
    
    /**
@@ -2342,19 +2824,19 @@ public class Dictionary extends LinkedHashMap {
       @param token If words contain the token, they are removed.
    */
    public void removeWordsContainingX( String fileName, String[] tokens ) {
-      Scanner scanner = getScanner( fileName );
+      Scanner fileScanner = getScanner( fileName );
       
       ArrayList<String> list = new ArrayList<String>();
       
-      while( scanner.hasNextLine() ) {
-         String word = scanner.nextLine();
+      while( fileScanner.hasNextLine() ) {
+         String word = fileScanner.nextLine();
          if( containsAny( word, tokens ) )
             list.add( word );
       }
       
       write( list, fileName );
       
-      scanner.close();
+      fileScanner.close();
    }
    
    /**
@@ -2366,19 +2848,19 @@ public class Dictionary extends LinkedHashMap {
       @param token If words contain the token, they are removed.
    */
    public void removeWordsContainingX( String oldFileName, String newFileName, String[] tokens ) {
-      Scanner scanner = getScanner( oldFileName );
+      Scanner fileScanner = getScanner( oldFileName );
       
       ArrayList<String> list = new ArrayList<String>();
       
-      while( scanner.hasNextLine() ) {
-         String word = scanner.nextLine();
+      while( fileScanner.hasNextLine() ) {
+         String word = fileScanner.nextLine();
          if( !containsAny( word, tokens ) )
             list.add( word );
       }
       
       write( list, newFileName );
       
-      scanner.close();
+      fileScanner.close();
    }
    
    /**
@@ -2388,19 +2870,19 @@ public class Dictionary extends LinkedHashMap {
       @param upperLimit All words as long as this limit and longer it will be removed
    */
    public void removeWordsLongerThanX( String fileName, int upperLimit ) {
-      Scanner scanner = getScanner( fileName );
+      Scanner fileScanner = getScanner( fileName );
       
       ArrayList<String> list = new ArrayList<String>();
       
-      while( scanner.hasNextLine() ) {
-         String word = scanner.nextLine();
+      while( fileScanner.hasNextLine() ) {
+         String word = fileScanner.nextLine();
          if( word.length() < upperLimit )
             list.add( word );
       }
       
       write( list, fileName );
       
-      scanner.close();
+      fileScanner.close();
    }
    
    /**
@@ -2412,21 +2894,85 @@ public class Dictionary extends LinkedHashMap {
       @param upperLimit All words as long as this limit and longer it will be removed
    */
    public void removeWordsLongerThanX( String oldFileName, String newFileName, int upperLimit ) {
-      Scanner scanner = getScanner( oldFileName );
+      Scanner fileScanner = getScanner( oldFileName );
       
       ArrayList<String> list = new ArrayList<String>();
       
-      while( scanner.hasNextLine() ) {
-         String word = scanner.nextLine();
+      while( fileScanner.hasNextLine() ) {
+         String word = fileScanner.nextLine();
          if( word.length() < upperLimit )
             list.add( word );
       }
       
       write( list, newFileName );
       
-      scanner.close();
+      fileScanner.close();
    }
-   
+
+   /**
+      Replace all tokens found in definitions with something else (can be nothing)
+
+      @param token The token to be replaced in definitions
+      @param replacement The replacement for the token
+      @param newFileName The name of the new text file
+   */
+   public void replaceWordsInDefs( String token, String replacement, String newFileName ) {
+      LinkedHashMap<String, String> wordDefMap = new LinkedHashMap<String, String>();
+      Set<Map.Entry<String, String>> wordDefPairs = this.entrySet();
+
+      for( Map.Entry<String, String> wordDef : wordDefPairs ) {
+         String word = wordDef.getKey();
+         String def = wordDef.getValue();
+         def = def.replace( token, replacement );
+         wordDefMap.put( word, def );
+      }
+
+      write( wordDefMap, newFileName );
+   }
+
+   /**
+      Remove words in definitions that are fully capitalized
+
+      @param newFileName The new file name for the words and their definitions
+   */
+   public void removeFullyCapitalizedWords( String newFileName ) {
+      LinkedHashMap<String, String> wordDefMap = new LinkedHashMap<String, String>();
+      Set<Map.Entry<String, String>> wordDefPairs = this.entrySet();
+
+      for( Map.Entry<String, String> wordDef : wordDefPairs ) {
+         String word = wordDef.getKey();
+         String def = wordDef.getValue();
+         def = def.replace(", also","");
+         String newDef = "";
+         String[] defWords = def.split(" ");
+         for( String token : defWords ) {
+            if( !isFullyCapitalized( token ) || token.contains("-") )
+               newDef += token + " ";
+         }
+         newDef = newDef.trim();
+         if( newDef.endsWith("or") )
+            newDef = newDef.substring(0, newDef.length() - 3) + "]\"";
+         else if( !newDef.endsWith("\"") && !newDef.endsWith("]") )
+            newDef += "]\"";
+
+         wordDefMap.put( word, newDef );
+      }
+
+      write( wordDefMap, newFileName );
+   }
+
+   /**
+      Determines whether a String is fully capitalized or not
+
+      @param str The String to check
+      @return boolean True if the String is fully capitalized, false otherwise
+   */
+   private boolean isFullyCapitalized( String str ) {
+      if( str.equals( str.toUpperCase() ) )
+         return true;
+      return false;
+   }
+
    /**
       Clear the contents of a text file by overwriting the file with an empty String
       
@@ -2677,10 +3223,8 @@ public class Dictionary extends LinkedHashMap {
       Dictionary object (this)
       
       @param scanner The scanner that is reading the text file containing all the words
-      @see HashMap.put( Key key, Value value )
    */
    private void addWordsAndDefs( Scanner scanner ) {
-      
       while( scanner.hasNextLine() ) {
          String line = scanner.nextLine();
          String[] linePieces = line.split("\t");
@@ -2691,18 +3235,181 @@ public class Dictionary extends LinkedHashMap {
          }
       }
    }
+
+   /**
+      Adds all the words and the total times that the word appears in definitions within the dictionary
+
+      @param scanner The scanner that is reading the text file containing all the words and their totals
+   */
+   private void addWordsAndTotals( Scanner scanner ) {
+      while( scanner.hasNextLine() ) {
+         String line = scanner.nextLine();
+         String[] linePieces = line.split("\t");
+         if( linePieces.length > 0 ) {
+            String word = linePieces[0];
+            int total = Integer.parseInt( linePieces[1] );
+            this.put( word, total );
+         }
+      }
+   }
    
    /**
       Gets a random word from the dictionary
       
       @return String A random word from the dictionary
    */
-   private String getRandomWord() {
-      ArrayList<String> keysAsArray = new ArrayList<String>(this.keySet());
+   public String getRandomWord() {
+      ArrayList<String> keysAsArray = new ArrayList<String>( this.keySet() );
       Random r = new Random();
-      return keysAsArray.get(r.nextInt(keysAsArray.size()));
+      return keysAsArray.get( r.nextInt( keysAsArray.size() ) );
+   }
+
+   /**
+      Gets a random word from a Dictionary
+
+      @param fileName The name of the text file that contains the word definition pairs for the dictionary
+      @param wordType The word type label that is used to find words whose definition contain the wordType token, which is needed if the wordType
+                      text file does not exist yet eg. fileName: adj_list.txt, wordType: [adj
+      @return String A random word from the given Dictionary
+   */
+   private String getRandomWord( String fileName, String wordType ) {
+      if( !fileExists( fileName ) ) {
+         LinkedHashMap<String, String> wordMap = this.getDefAppearances( wordType );
+         this.write( wordMap, fileName );
+      }
+      Dictionary wordDict = new Dictionary( fileName, true );
+      return wordDict.getRandomWord();
+   }
+
+   /**
+      Gets a random adjective from the dictionary
+
+      @return String The random adjective from the dictionary
+   */
+   public String getRandomAdjective() {
+      final String ADJ_LIST_TEXT_FILE = "adj_list.txt";
+      return getRandomWord( ADJ_LIST_TEXT_FILE, ADJ_LABEL );
+   }
+   /**
+      Gets a random noun from the dictionary
+
+      @return String The random noun from the dictionary
+   */
+   public String getRandomNoun() {
+      final String NOUN_LIST_TEXT_FILE = "noun_list.txt";
+      return getRandomWord( NOUN_LIST_TEXT_FILE, NOUN_LABEL );
+   }
+   /**
+      Gets a random verb from the dictionary
+
+      @return String The random verb from the dictionary
+   */
+   public String getRandomVerb() {
+      final String VERB_LIST_TEXT_FILE = "verb_list.txt";
+      return getRandomWord( VERB_LIST_TEXT_FILE, VERB_LABEL );
+   }
+   /**
+      Gets a random preposition from the dictionary
+
+      @return String The random preposition from the dictionary
+   */
+   public String getRandomPreposition() {
+      final String PREP_LIST_TEXT_FILE = "prep_list.txt";
+      return getRandomWord( PREP_LIST_TEXT_FILE, PREP_LABEL );
+   }
+   /**
+      Gets a random interjection from the dictionary
+
+      @return String The random interjection from the dictionary
+   */
+   public String getRandomInterjection() {
+      final String INTERJ_LIST_TEXT_FILE = "interj_list.txt";
+      return getRandomWord( INTERJ_LIST_TEXT_FILE, INTERJ_LABEL );
+   }
+   /**
+      Gets a random adverb from the dictionary
+
+      @return String The random adverb from the dictionary
+   */
+   public String getRandomAdverb() {
+      final String ADV_LIST_TEXT_FILE = "adv_list.txt";
+      return getRandomWord( ADV_LIST_TEXT_FILE, ADV_LABEL );
+   }
+   /**
+      Gets a random pronoun from the dictionary
+
+      @return String The random pronoun from the dictionary
+   */
+   public String getRandomPronoun() {
+      final String PRON_LIST_TEXT_FILE = "pron_list.txt";
+      return getRandomWord( PRON_LIST_TEXT_FILE, PRON_LABEL );
+   }
+   /**
+      Gets a random conjunction from the dictionary
+
+      @return String The random conjunction from the dictionary
+   */
+   public String getRandomConjunction() {
+      final String CONJ_LIST_TEXT_FILE = "conj_list.txt";
+      return getRandomWord( CONJ_LIST_TEXT_FILE, CONJ_LABEL );
+   }
+   /**
+      Gets a random slang word from the dictionary
+
+      @return String The random slang word from the dictionary
+   */
+   public String getRandomSlang() {
+      final String SLANG_LIST_TEXT_FILE = "slang_list.txt";
+      return getRandomWord( SLANG_LIST_TEXT_FILE, SLANG_LABEL );
+   }
+   /**
+      Gets a random colloquial word from the dictionary
+
+      @return String The random colloquial word from the dictionary
+   */
+   public String getRandomColloquial() {
+      final String COLLOQ_LIST_TEXT_FILE = "colloq_list.txt";
+      return getRandomWord( COLLOQ_LIST_TEXT_FILE, COLLOQ_LABEL );
+   }
+   /**
+      Gets a random dialect word from the dictionary
+
+      @return String The random dialect word from the dictionary
+   */
+   public String getRandomDialect() {
+      final String DIALECT_LIST_TEXT_FILE = "dialect_list.txt";
+      return getRandomWord( DIALECT_LIST_TEXT_FILE, DIALECT_LABEL );
+   }
+   /**
+      Gets a random archaic word from the dictionary
+
+      @return String The random archaic word from the dictionary
+   */
+   public String getRandomArchaic() {
+      final String ARCHAIC_LIST_TEXT_FILE = "archaic_list.txt";
+      return getRandomWord( ARCHAIC_LIST_TEXT_FILE, ARCHAIC_LABEL );
+   }
+   /**
+      Gets a random obsolete word from the dictionary
+
+      @return String The random obsolete word from the dictionary
+   */
+   public String getRandomObsolete() {
+      final String OBSOLETE_LIST_TEXT_FILE = "obsolete_list.txt";
+      return getRandomWord( OBSOLETE_LIST_TEXT_FILE, OBSOLETE_LABEL );
    }
    
+   /**
+      Check whether the file exists in the current folder or not
+
+      @param fileName The name of the file
+      @return boolean True if the file exists in the current folder, false otherwise
+   */
+   private boolean fileExists( String fileName ) {
+      File file = new File( fileName );
+      return file.exists();
+   }
+
    /**
       Adds the contents of an array to the end of an ArrayList
       
@@ -2711,9 +3418,8 @@ public class Dictionary extends LinkedHashMap {
       @return ArrayList<String> Contains the contents of the original list plus the contents of the array
    */
    private ArrayList<String> addArray( ArrayList<String> arrayList, String[] list ) {
-      for( int i = 0; i < list.length; i++ ) {
+      for( int i = 0; i < list.length; i++ )
          arrayList.add( list[i] );
-      }
       
       return arrayList;
    }

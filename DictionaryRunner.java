@@ -8,11 +8,15 @@
 */
 
 import java.util.Scanner;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public class DictionaryRunner {
    
+   public static Scanner scanner = new Scanner( System.in );
+
    public static void main( String[] args ) {
-      Scanner scanner = new Scanner( System.in );
       
       Dictionary dct = new Dictionary();
       
@@ -32,6 +36,14 @@ public class DictionaryRunner {
          String fileName2 = "";
          String specs = "";
          int num = 0;
+
+         if( response.contains("q") )
+            break;
+
+         //Set the dictionary to use
+         dct = setDictionary( dct );
+         String dctFileName = dct.getFileName().replace(".txt","") + "_";
+
          switch( response ) {
             case "a": SOPln("What would you like to know is a word or not?");
                       response2 = scanner.nextLine();
@@ -78,8 +90,8 @@ public class DictionaryRunner {
                           + "\n\t- '*'s denote any number of variable letters" + "\n\t- '#'s denote any consonant letters"
                           + "\n\t- '^'s denote any number of vowel letters");
                       specs = scanner.nextLine();
-                      SOPln("Would you like to:\n\t1.Find matches from the dictionary\n\t2.Find matches from a text file\n\t"
-                          + "3.Descramble a String of letters and find matches from that text file");
+                      SOPln("Would you like to:\n\t1. Find matches from the dictionary\n\t2. Find matches from a text file\n\t"
+                          + "3. Descramble a String of letters and find matches from that text file");
                       num = scanner.nextInt();
                       scanner.nextLine();
                       switch( num ) {
@@ -295,7 +307,7 @@ public class DictionaryRunner {
                             if( isPositiveResponse() )
                                dct.printFile( fileName2 );
                          }
-                      }else{
+                      } else {
                          SOPln("Would you like to overwrite your text file?");
                          if( isPositiveResponse() ) {
                             dct.removeWordsContainingX( fileName, responseList4[0] );
@@ -387,9 +399,144 @@ public class DictionaryRunner {
                       fileName = scanner.nextLine();
                       dct.convertDelimitersToLineBreaks( response, fileName );
                       break;
+            case "3": SOPln("\nWhat would you like to do?\n");
+                      SOPln("1. Get words that have X in their definitions");
+                      SOPln("2. getAdjectives");
+                      SOPln("3. getNouns");
+                      SOPln("4. getVerbs");
+                      SOPln("5. getPrepositions");
+                      SOPln("6. getInterjections");
+                      SOPln("7. getAdverbs");
+                      SOPln("8. getPronouns");
+                      SOPln("9. getConjunctions");
+                      SOPln("10. getSlangWords");
+                      SOPln("11. getColloquialWords");
+                      SOPln("12. getDialectWords");
+                      SOPln("13. getArchaicWords");
+                      SOPln("14. getObsoleteWords");
+                      num = scanner.nextInt(); scanner.nextLine();
+                      switch(num) {
+                        case 1:  SOPln("\nWhat token/phrase are you searching for in each definition?");
+                                 response = scanner.nextLine();
+                                 LinkedHashMap<String, String> wordMap = dct.getDefAppearances( response );
+                                 String newFileName = dctFileName + response + "_list.txt";
+                                 dct.write( wordMap, newFileName );
+                                 SOPln( newFileName + " was created");
+                                 break;
+                        case 2:  LinkedHashMap<String, String> adjMap = dct.getAdjectives();
+                                 dct.write( adjMap, dctFileName + "adj_list.txt" );
+                                 SOPln("adj_list.txt was created");
+                                 break;
+                        case 3:  LinkedHashMap<String, String> nounMap = dct.getNouns();
+                                 dct.write( nounMap, dctFileName + "noun_list.txt" );
+                                 SOPln("noun_list.txt was created");
+                                 break;
+                        case 4:  LinkedHashMap<String, String> verbMap = dct.getVerbs();
+                                 dct.write( verbMap, dctFileName + "verb_list.txt" );
+                                 SOPln("verb_list.txt was created");
+                                 break;
+                        case 5:  LinkedHashMap<String, String> prepMap = dct.getPrepositions();
+                                 dct.write( prepMap, dctFileName + "prep_list.txt" );
+                                 SOPln("prep_list.txt was created");
+                                 break;
+                        case 6:  LinkedHashMap<String, String> interjMap = dct.getInterjections();
+                                 dct.write( interjMap, dctFileName + "interj_list.txt" );
+                                 SOPln("interj_list.txt was created");
+                                 break;
+                        case 7:  LinkedHashMap<String, String> advMap = dct.getAdverbs();
+                                 dct.write( advMap, dctFileName + "adv_list.txt" );
+                                 SOPln("adv_list.txt was created");
+                                 break;
+                        case 8:  LinkedHashMap<String, String> pronMap = dct.getPronouns();
+                                 dct.write( pronMap, dctFileName + "pron_list.txt" );
+                                 SOPln("pron_list.txt was created");
+                                 break;
+                        case 9:  LinkedHashMap<String, String> conjMap = dct.getConjunctions();
+                                 dct.write( conjMap, dctFileName + "conj_list.txt" );
+                                 SOPln("conj_list.txt was created");
+                                 break;
+                        case 10: LinkedHashMap<String, String> slangMap = dct.getSlangs();
+                                 dct.write( slangMap, dctFileName + "slang_list.txt" );
+                                 SOPln("slang_list.txt was created");
+                                 break;
+                        case 11: LinkedHashMap<String, String> colloqMap = dct.getColloquials();
+                                 dct.write( colloqMap, dctFileName + "colloq_list.txt" );
+                                 SOPln("colloq_list.txt was created");
+                                 break;
+                        case 12: LinkedHashMap<String, String> dialectMap = dct.getDialects();
+                                 dct.write( dialectMap, dctFileName + "dialect_list.txt" );
+                                 SOPln("dialect_list.txt was created");
+                                 break;
+                        case 13: LinkedHashMap<String, String> archMap = dct.getArchaics();
+                                 dct.write( archMap, dctFileName + "archaic_list.txt" );
+                                 SOPln("archaic_list.txt was created");
+                                 break;
+                        case 14: LinkedHashMap<String, String> obsMap = dct.getObsoletes();
+                                 dct.write( obsMap, dctFileName + "obsolete_list.txt" );
+                                 SOPln("obsolete_list.txt was created");
+                                 break;
+                        default: SOPln("\nUnrecognized option.");
+                                 break;
+                      }
+                      break;
+            case "4": SOPln("\nWhat word do you want to search the definitions for?");
+                      response = scanner.nextLine();
+                      num = dct.getDefAppearanceTotal( response );
+                      SOPln("\n\nThe word " + response + " appears in definitions in the dictionary for " + num + " unique definitions.");
+                      break;
+            case "5": SOPln("\nPlease wait. This may take some time.");
+                      LinkedHashMap<String, Integer> wordTotalMap = dct.getDefAppearanceDictionary();
+                      dct.writeWordTotalMap( wordTotalMap, dctFileName + "_totals.txt" );
+                      SOPln("dictionary_totals.txt was created");
+                      break;
+            case "6": //Get dictionary text file
+                      /*
+                      SOPln("\nWhat dictionary text file do you want to use?");
+                      File[] fileList = getDictionaryFiles();
+                      printFileNames( fileList );
+                      response = scanner.nextLine();
+                      String dctTextFileName = response;
+                      if( isNumeric( response ) )
+                        dctTextFileName = cleanDctFileName( fileList[ Integer.parseInt( response ) - 1 ].toString() );
+                      */
+                      File[] fileList = getDictionaryFiles();
+                      String dctTextFileName = dct.getFileName();
+                     
+                      //Get totals text file
+                      SOPln("\nWhat totals text file do you want to use?");
+                      printFileNames( fileList );
+                      response = scanner.nextLine();
+                      String totalsTextFileName = response;
+                      if( isNumeric( response ) )
+                        totalsTextFileName = cleanDctFileName( fileList[ Integer.parseInt( response ) - 1 ].toString() );
+                      
+                      //Get the minimum number of appearances required for this simplified dictionary
+                      SOPln("\nWhat is the minimum number of appearances that are required for a word to be in the simplified dictionary?");
+                      int minAppearances = scanner.nextInt(); scanner.nextLine();
+
+                      //Get simplified dictionary using the normal dictionary or the custom dictionary
+                      LinkedHashMap<String, String> simplifiedDictionary = dct.getSimplifiedDictionary( totalsTextFileName, minAppearances );
+                      
+                      //Create new simplified dictionary text file
+                      String simplifiedDictName = dctTextFileName.replace(".txt","") + "_simplified_" + minAppearances + ".txt";
+                      dct.write( simplifiedDictionary, simplifiedDictName );
+                      SOPln( simplifiedDictName + " was created");
+                      break;
+            case "7": SOPln("\nWhat token do you want to replace in the definitions?");
+                      String token = scanner.nextLine();
+                      SOPln("\nWhat will the token's replacement be?");
+                      String replacement = scanner.nextLine();
+                      SOPln("\nWhat is the name of the new file?");
+                      response = scanner.nextLine();
+                      dct.replaceWordsInDefs( token, replacement, response );
+                      break;
+            case "8": SOPln("\nWhat is the name of the new text file?");
+                      response = scanner.nextLine();
+                      dct.removeFullyCapitalizedWords( response );
+                      break;
             case "q": keepGoing = false;
                       break;
-            default:  SOPln("I didn't understand that input. Please enter a letter between 'a' and 'u'.");
+            default:  SOPln("I didn't understand that input. Please enter a letter between 'a' to 'z' or '1' to '5'.");
                       break;
          }
       } while( keepGoing );
@@ -427,6 +574,12 @@ public class DictionaryRunner {
       SOPln("z. getXLetterWordsFromTextFile");
       SOPln("1. findAndReplace");
       SOPln("2. convertDelimitersToLineBreaks");
+      SOPln("3. getWordsThatAppearInDefinitions");
+      SOPln("4. getDefAppearanceTotal");
+      SOPln("5. getDefAppearanceTotalDictionary");
+      SOPln("6. getSimplifiedDictionary");
+      SOPln("7. replaceWordsInDefs");
+      SOPln("8. removeFullyCapitalizedWords");
       SOPln("\nq. quit");
    }
    
@@ -436,11 +589,7 @@ public class DictionaryRunner {
       @return boolean True if yes, false if no 
    */
    private static boolean isPositiveResponse( ) {
-      Scanner scanner = new Scanner( System.in );
-      String response = scanner.nextLine();
-      response = response.toUpperCase();
-      
-      scanner.close();
+      String response = scanner.nextLine().toUpperCase();
 
       if( response.contains("Y") || response.contains("1") || response.contains("SURE") || response.contains("OK") )
          return true;
@@ -448,12 +597,105 @@ public class DictionaryRunner {
    }
    
    /**
+      Set the dictionary being used
+
+      @param currentDict The dictionary that is currently being used
+      @return Dictionary The new dictionary to be used
+   */
+   private static Dictionary setDictionary( Dictionary currentDict ) {
+      SOPln("\nWhat dictionary text file do you want to use?");
+      File[] fileList = getDictionaryFiles();
+      printFileNames( fileList );
+      String response = scanner.nextLine();
+      String dctTextFileName = response;
+      if( isNumeric( response ) )
+         dctTextFileName = cleanDctFileName( fileList[ Integer.parseInt( response ) - 1 ].toString() );
+      
+      if( !dctTextFileName.equals( "dictionary_defs.txt" ) ) {
+         if( dctTextFileName.contains("total") )
+            return new Dictionary( dctTextFileName );
+         return new Dictionary( dctTextFileName, true );
+      }
+
+      return currentDict;
+   }
+
+   /**
+      Prints the list of file names from a given array
+
+      @param fileList The list of files to print
+   */
+   private static void printFileNames( File[] fileList ) {
+      SOPln();
+      int counter = 1;
+      for( File file : fileList )
+         SOPln( counter++ + ". " + cleanDctFileName( file.toString() ) );
+   }
+
+   /**
+      Remove the any piece of the local path of the dictionary text file
+      
+      @param fileName The path of the dictionary text file
+      @return String The name of the dictionary text file
+   */
+   private static String cleanDctFileName( String fileName ) {
+      return fileName.substring( fileName.toString().indexOf("dictionary") );
+   }
+
+   /**
+      Returns the list of dictionary files in the current directory
+      
+      @return File[] The list of dictionary files in the current directory
+   */
+   private static File[] getDictionaryFiles() {
+      File dir = new File(".");
+      File[] filesList = dir.listFiles();
+      ArrayList<File> newFileList = new ArrayList<File>();
+      
+      for( File file : filesList ) {
+         if( file.isFile() ) {
+            if( file.toString().contains("dictionary") ) {
+               newFileList.add( file );
+            }
+         }
+      }
+      
+      File[] newFileListArray = new File[ newFileList.size() ];
+      //convert to array since toArray() does not preserve order
+      for( int i = 0; i < newFileList.size(); i++ )
+         newFileListArray[i] = newFileList.get(i);
+      
+      return newFileListArray;
+   }
+
+   /**
+      Determine whether a String is a number or not
+
+      @param str The String to test
+      @return boolean True if the String is a number, false otherwise
+   */
+   private static boolean isNumeric( String str ) {
+      if( str == null )
+          return false;
+
+      try {
+          double d = Double.parseDouble( str );
+      } catch( NumberFormatException e ) {
+          return false;
+      }
+      return true;
+  }
+
+   /**
       Replaces System.out.println(..) because laziness.
       
       @param message The message to print
    */
    private static void SOPln( String message ) {
       System.out.println( message );
+   }
+   private static void SOPln() {
+      SOPln("");
    }
    
 }
