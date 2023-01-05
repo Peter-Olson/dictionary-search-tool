@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
    Wordle.java
@@ -17,28 +18,27 @@ import java.util.ArrayList;
    X - Wrong letter, not in the word
    
    @author Peter Olson
-   @version 12/29/22
+   @version 1/4/23
 */
 
 public class Wordle {
    
+   public static Scanner scanner = new Scanner( System.in );
+   
    public static void main( String[] args ) {
       String response = "";
       do {
-         Scanner scanner = new Scanner( System.in );
          SOPln("\nWelcome to Wordle!\n\nWhat length of words do you want to play with?");
          int lengthWords = scanner.nextInt(); scanner.nextLine();
          SOPln("\nHow many guesses do you want?");
          int totalGuesses = scanner.nextInt(); scanner.nextLine();
          String dictionaryFile = lengthWords + "letterwords.txt";
-         Dictionary wordleDict = new Dictionary( dictionaryFile, false );
-         scanner.close();
+         Dictionary wordleDict = new Dictionary( dictionaryFile, true );
          wordle( wordleDict, lengthWords, totalGuesses );
          SOPln("\n\nWould you like to play again?");
-         Scanner newScanner = new Scanner(System.in);
-         response = newScanner.nextLine().toLowerCase();
-         newScanner.close();
+         response = scanner.nextLine().toLowerCase();
       } while( response.contains("y") || response.contains("again") || response.contains("ok") );
+      scanner.close();
    }
    
    /**
@@ -56,7 +56,6 @@ public class Wordle {
    */
    public static void wordle( Dictionary wordleDict, int wordLength, int maxGuesses ) {
       String answer = getRandomWord( wordleDict );
-      Scanner inputScanner = new Scanner( System.in );
       int totalGuesses = 0;
       String guess = "";
       String guessHistory = "";
@@ -65,7 +64,7 @@ public class Wordle {
       //game loop
       while( totalGuesses <= maxGuesses && !guess.equals( answer ) ) {
          printWordleMenu( guessHistory, lettersLeft );
-         guess = inputScanner.nextLine().toUpperCase();
+         guess = scanner.nextLine().toUpperCase();
          if( guess.length() != wordLength ) {
             SOPln("Guess needs to be " + wordLength + " letters long.");
             continue;
@@ -77,13 +76,11 @@ public class Wordle {
          guessHistory += "\n" + guessClue;
       }
       
-      inputScanner.close();
-      
       if( totalGuesses > maxGuesses )
          SOPln("\nYou ran out of guesses! The word was " + answer + 
                ".\nThe definition of " + answer + " is: " + wordleDict.getDef( answer ) );
       else
-         SOPln("\nYou win! The definition of " + answer + " is: " + wordleDict.getDef( answer ) );
+         SOPln("\nYou win! The definition of " + answer + " is: " + wordleDict.getDef( answer.toUpperCase() ) );
    }
    
    /**
@@ -109,19 +106,63 @@ public class Wordle {
       String RIGHT_LETTER_WRONG_SPOT = "?";
       String WRONG = "X";
       
+      //Create a map that keeps track of which letters exist in the answer and which letters have multiple appearances
+      HashMap<String, Integer> letterCount = new HashMap<String, Integer>();
+      char[] answerLetters = answer.toCharArray();
+      for( int rep = 0; rep < answerLetters.length; rep++ ) {
+         String letter = Character.toString( answerLetters[rep] );
+         if( letterCount.containsKey( letter ) )
+            letterCount.replace( letter, letterCount.get( letter ), letterCount.get( letter ) + 1 );
+         else
+            letterCount.put( letter, 1 );
+      }
+
+      //Find how many letters are in the right spot and reduce the count for these letters, which
+      //is necessary in order to correctly display letters that are in the word but in the wrong spot, but
+      //without double-counting anything. There's probably a tricky way to do this all in one loop, but
+      //I don't think it's really worth the effort considering how short of words are being iterated
       for( int rep = 0; rep < guessSize; rep++ ) {
          char guessLetter = guess.charAt(rep);
          char answerLetter = answer.charAt(rep);
+         String letter = Character.toString( guessLetter );
          
          if( guessLetter == answerLetter )
-            clue += CORRECT;
-         else if( answer.contains( Character.toString( guessLetter ) ) )
-            clue += RIGHT_LETTER_WRONG_SPOT;
-         else
-            clue += WRONG;
+            reduceLetterCount( letter, letterCount );
       }
       
+      //Put together the clue based on the answer and the letter count map
+      for( int rep = 0; rep < guessSize; rep++ ) {
+         char guessLetter = guess.charAt(rep);
+         char answerLetter = answer.charAt(rep);
+         String letter = Character.toString( guessLetter );
+         
+         if( guessLetter == answerLetter ) {
+            clue += CORRECT;
+         } else if ( letterCount.containsKey( letter ) ) {
+            clue += RIGHT_LETTER_WRONG_SPOT;
+            reduceLetterCount( letter, letterCount );
+         } else {
+            clue += WRONG;
+         }
+      }
+
       return clue;
+   }
+
+   /**
+      Reduce the total letter count of the given letter within the answer map
+
+      @param letter The letter whose count is to be reduced
+      @param letterCount The map of letters and their counts which represents the answer word
+   */
+   private static void reduceLetterCount( String letter, HashMap<String, Integer> letterCount ) {
+      if( !letterCount.containsKey( letter ) )
+         return;
+      
+      if( letterCount.get( letter ) == 1 )
+         letterCount.remove( letter );
+      else
+         letterCount.replace( letter, letterCount.get( letter ), letterCount.get( letter ) - 1 );
    }
    
    /**
